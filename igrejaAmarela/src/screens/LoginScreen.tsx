@@ -21,10 +21,10 @@ export default function LoginScreen({ navigation }: any) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos');
       return;
     }
-    
+
     // Aqui você vai integrar com a autenticação depois
     console.log('Login:', { email, senha });
-    
+
     // 👈 IMPORTANTE: Navegar para as tabs após login
     navigation.replace('MainTabs'); // Use 'replace' para não voltar para login com o botão voltar
   };
@@ -121,9 +121,17 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   formContainer: {
-    flex: 1,
+    marginHorizontal: 20,
+    marginTop: -60,
     padding: 25,
-    marginTop: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 10,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -9,7 +9,10 @@ import {
   Platform,
   Alert,
   Image,
+
 } from 'react-native';
+
+
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }: any) {
@@ -42,55 +45,64 @@ export default function LoginScreen({ navigation }: any) {
             resizeMode="contain"
           />
         </View>
-
       </View>
+      <View style={styles.Card}>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
+
+        <View style={styles.imageCard}>
+          <Image
+            source={require('../../assets/images/logo-bolinha.png')}
+            style={styles.logoImageCard}
+            resizeMode="contain"
           />
         </View>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#999"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry={!mostrarSenha}
-          />
-          <TouchableOpacity
-            onPress={() => setMostrarSenha(!mostrarSenha)}
-            style={styles.eyeIcon}
-          >
-            <Ionicons
-              name={mostrarSenha ? 'eye-outline' : 'eye-off-outline'}
-              size={20}
-              color="#999"
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="E-mail"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry={!mostrarSenha}
+            />
+            <TouchableOpacity
+              onPress={() => setMostrarSenha(!mostrarSenha)}
+              style={styles.eyeIcon}
+            >
+              <Ionicons
+                name={mostrarSenha ? 'eye-outline' : 'eye-off-outline'}
+                size={20}
+                color="#999"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>Entrar</Text>
+            <Ionicons name="arrow-forward-outline" size={20} color="#fff" />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.forgotButton}>
+            <Text style={styles.forgotText}>Esqueceu a senha ?</Text>
+
+          </TouchableOpacity>
+
         </View>
-
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
-          <Ionicons name="arrow-forward-outline" size={20} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.forgotButton}>
-          <Text style={styles.forgotText}>Esqueceu a senha?</Text>
-
-        </TouchableOpacity>
-       
       </View>
     </KeyboardAvoidingView>
   );
@@ -110,38 +122,47 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'Poppins sans-serif',
-    color: '#fff',
-    marginTop: 20,
-    marginBottom: 5,
+
+  Card: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    zIndex: 2,
+    flex: 1,
+    padding: 25,
+    marginTop: -100,
   },
-  Subtitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'Poppins sans-serif',
-    color: '#fff',
-    marginTop: 2,
-    marginBottom: 20,
+  imageCard: {
+    width: 100,
+    height: 100,
+    marginTop: 80,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
   imageContainer: {
     width: 100,
     height: 100,
     marginTop: 80,
     borderRadius: 50,
-    backgroundColor: 'rgb(255, 255, 255)',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
+  logoImageCard: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 40,
+  },
   logoImage: {
-    width: 80,
-    height: 80,
+    width: 200,
+    height: 360,
     borderRadius: 40,
   },
   formContainer: {
+    borderRadius: 20,
+    zIndex: 2,
     flex: 1,
     padding: 25,
     marginTop: 40,
