@@ -2,8 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-// Importar suas telas
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../(tabs)';
 
 
 const Tab = createBottomTabNavigator();
@@ -27,19 +26,21 @@ export default function TabsLayout() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#F2CC39',
+        tabBarActiveTintColor: '#fec31d', 
         tabBarInactiveTintColor: 'gray',
-        headerStyle: {
-          backgroundColor: '#F2CC39',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
+        headerShown: false, 
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopWidth: 1,
+          borderTopColor: '#f0f0f0',
+          height: 60,
+          paddingBottom: 10,
+          paddingTop: 10,
         },
       })}
     >
       <Tab.Screen name="Início" component={HomeScreen} />
-
+  
     </Tab.Navigator>
   );
 }
