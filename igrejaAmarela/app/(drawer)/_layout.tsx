@@ -1,4 +1,3 @@
-// app/(drawer)/_layout.tsx
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
@@ -6,7 +5,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import CustomHeader from '../components/customHeader';
 
-// Componente customizado do menu lateral
 function CustomDrawerContent(props: any) {
   const router = useRouter();
 
@@ -35,7 +33,6 @@ function CustomDrawerContent(props: any) {
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
-      {/* Botão de Logout no final - FIXADO NO RODAPÉ */}
       <TouchableOpacity 
         style={drawerStyles.logoutButton}
         onPress={() => router.replace('/')}

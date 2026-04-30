@@ -22,6 +22,7 @@ export default function HomeScreen() {
       id: 1,
       titulo: 'Alimentação',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../alimentacao'),
       imagem: require('../../../assets/images/alimentacao.png'),
       cor: '#f7f7fa',
     },
@@ -73,7 +74,8 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContainer}
         >
           {servicos.map((servico) => (
-            <TouchableOpacity key={servico.id} style={styles.servicoCard}>
+            <TouchableOpacity key={servico.id} style={styles.servicoCard}   onPress={servico.onclick}  // ADICIONE ESTA LINHA
+>
               <View style={[styles.imageContainer, { backgroundColor: servico.cor + '20' }]}>
                 <Image
                   source={servico.imagem}
@@ -217,7 +219,6 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 16,
   },
-  // Estilos para banners lado a lado
   bannersRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

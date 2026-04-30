@@ -1,4 +1,3 @@
-// app/(drawer)/acoes.tsx
 import React from 'react';
 import { 
   View, 
@@ -9,9 +8,7 @@ import {
   TouchableOpacity,
   Dimensions 
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
-const { width } = Dimensions.get('window');
 
 export default function AcoesScreen() {
   const servicos = [
@@ -43,10 +40,15 @@ export default function AcoesScreen() {
       imagem: require('../.././assets/images/midias.png'),
       cor: '#f7f7fa',
     },
-   
+    {
+      id: 5,
+      titulo: 'Ajuda',
+      descricao: 'Lorem Ipsum is simply',
+      imagem: require('../.././assets/images/ajuda.png'),
+      cor: '#f7f7fa',
+    },
   ];
 
-  // Dividir os serviços em duas colunas
   const servicosCol1 = servicos.filter((_, index) => index % 2 === 0);
   const servicosCol2 = servicos.filter((_, index) => index % 2 === 1);
 
@@ -60,7 +62,6 @@ export default function AcoesScreen() {
      
       </View>
 
-      {/* Serviços em Duas Colunas */}
       <View style={styles.servicosGrid}>
         <View style={styles.column}>
           {servicosCol1.map((servico) => (
