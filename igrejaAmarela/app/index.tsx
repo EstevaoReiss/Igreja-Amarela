@@ -1,4 +1,4 @@
-// app/index.tsx - Versão otimizada
+// app/index.tsx
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   Image,
   ScrollView,
 } from 'react-native';
@@ -23,7 +22,8 @@ export default function LoginScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
 
   const handleLogin = () => {
-    router.replace('/(tabs)');
+    // CORRIGIDO: caminho para a nova estrutura
+    router.replace('./(drawer)/(tabs)');
   };
 
   return (

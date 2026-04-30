@@ -22,28 +22,28 @@ export default function HomeScreen() {
       id: 1,
       titulo: 'Alimentação',
       descricao: 'Lorem Ipsum is simply',
-      imagem: require('../../assets/images/alimentacao.png'),
+      imagem: require('../../../assets/images/alimentacao.png'),
       cor: '#f7f7fa',
     },
     {
       id: 2,
       titulo: 'Psicologo',
       descricao: 'Lorem Ipsum is simply',
-      imagem: require('../../assets/images/psicologo.png'),
+      imagem: require('../../../assets/images/psicologo.png'),
       cor: '#f7f7fa',
     },
     {
       id: 3,
       titulo: 'Grupo Ajuda',
       descricao: 'Lorem Ipsum is simply',
-      imagem: require('../../assets/images/grupoAjuda.png'),
+      imagem: require('../../../assets/images/grupoAjuda.png'),
       cor: '#f7f7fa',
     },
     {
       id: 4,
       titulo: 'Midias',
       descricao: 'Lorem Ipsum is simply',
-      imagem: require('../../assets/images/midias.png'),
+      imagem: require('../../../assets/images/midias.png'),
       cor: '#f7f7fa',
     },
   ];
@@ -51,35 +51,17 @@ export default function HomeScreen() {
   const banners = [
     {
       id: 1,
-      imagem: require('../../assets/images/bannerCalendario.jpg'),
+      imagem: require('../../../assets/images/bannerCalendario.jpg'),
     },
     {
       id: 2,
-      imagem: require('../../assets/images/bannerComunidade.jpg'),
+      imagem: require('../../../assets/images/bannerComunidade.jpg'),
     },
   ];
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Image
-            source={require('../../assets/images/logoApp.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
-        
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="notifications-outline" size={24} color="#506AD4" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="person-outline" size={24} color="#333" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      
 
    
 
@@ -121,7 +103,7 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.historiaBanner}>
         <View style={styles.historiaImageContainer}>
           <Image
-            source={require('../../assets/images/igreja.png')}
+            source={require('../../../assets/images/igreja.png')}
             style={styles.historiaImage}
             resizeMode="cover"
           />
@@ -149,7 +131,7 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.lastCardRight}>
           <View style={styles.lastCardImageContainer}>
             <Image
-              source={require('../../assets/images/suporte.png')}
+              source={require('../../../assets/images/suporte.png')}
               style={styles.lastCardImage}
               resizeMode="contain"
             />
