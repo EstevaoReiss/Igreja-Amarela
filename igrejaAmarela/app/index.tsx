@@ -23,22 +23,26 @@ export default function LoginScreen() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Observer de autenticação
+  // Observer de autenticação - se já estiver logado, vai direto para o drawer
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.replace('./(drawer)/(tabs)');
+        router.replace('/(drawer)/(tabs)');
       }
     });
     return unsubscribe;
   }, []);
 
   const handleLogin = () => {
+    if (!email || !senha) {
+      Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
     signInWithEmailAndPassword(auth, email, senha)
       .then((userCredential) => {
-        const user = userCredential.user;
-        Alert.alert('Login bem-sucedido!');
-        router.replace('./(drawer)/(tabs)');
+        Alert.alert('Sucesso', 'Login realizado com sucesso!');
+        router.replace('/(drawer)/(tabs)');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -57,13 +61,11 @@ export default function LoginScreen() {
         }
         
         Alert.alert('Erro ao fazer login', mensagem);
-        setEmail('');
         setSenha('');
         setMostrarSenha(false);
         console.error('Erro de login:', errorCode, error.message);
       });
   };
-
 
   return (
     <KeyboardAvoidingView
