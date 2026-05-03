@@ -1,12 +1,16 @@
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import CustomHeader from '../components/customHeader';
+import { getAuth } from 'firebase/auth';
+import { auth } from '../../src/firebase.config';
 
 function CustomDrawerContent(props: any) {
   const router = useRouter();
+
+
 
   return (
     <View style={drawerStyles.container}>
@@ -35,7 +39,12 @@ function CustomDrawerContent(props: any) {
 
       <TouchableOpacity 
         style={drawerStyles.logoutButton}
-        onPress={() => router.replace('/')}
+        onPress={async () => {
+          Alert.alert('Logout', 'Você clicou em sair!');
+          const firebaseAuth = getAuth();
+          await firebaseAuth.signOut();
+          router.replace('/');
+        }}
       >
         <Ionicons name="log-out-outline" size={24} color="#fec31d" />
         <Text style={drawerStyles.logoutText}>Sair</Text>

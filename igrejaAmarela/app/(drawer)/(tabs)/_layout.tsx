@@ -29,14 +29,12 @@ export default function TabLayout() {
         }}
       />
 
-      
-
       <Tabs.Screen
-        name="explore"
+        name="alimentacao"
         options={{
-          title: 'Explorar',
+          title: 'Alimentação',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" size={size} color={color} />
+            <Ionicons name="restaurant-outline" size={size} color={color} />
           ),
         }}
       />

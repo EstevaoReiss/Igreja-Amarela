@@ -1,5 +1,4 @@
-// app/index.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,9 +9,12 @@ import {
   Platform,
   Image,
   ScrollView,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { auth } from '../src/firebase.config';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,10 +23,47 @@ export default function LoginScreen() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Observer de autenticação
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace('./(drawer)/(tabs)');
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   const handleLogin = () => {
-    // CORRIGIDO: caminho para a nova estrutura
-    router.replace('./(drawer)/(tabs)');
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        Alert.alert('Login bem-sucedido!');
+        router.replace('./(drawer)/(tabs)');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        let mensagem = 'Erro ao fazer login. Tente novamente.';
+        
+        if (errorCode === 'auth/user-not-found') {
+          mensagem = 'Usuário não cadastrado. Por favor, verifique seu e-mail ou cadastre-se.';
+        } else if (errorCode === 'auth/wrong-password') {
+          mensagem = 'Senha incorreta. Tente novamente.';
+        } else if (errorCode === 'auth/invalid-email') {
+          mensagem = 'E-mail inválido. Por favor, verifique.';
+        } else if (errorCode === 'auth/too-many-requests') {
+          mensagem = 'Muitas tentativas de login. Tente novamente mais tarde.';
+        } else if (errorCode === 'auth/invalid-credential') {
+          mensagem = 'E-mail ou senha incorretos. Tente novamente.';
+        }
+        
+        Alert.alert('Erro ao fazer login', mensagem);
+        setEmail('');
+        setSenha('');
+        setMostrarSenha(false);
+        console.error('Erro de login:', errorCode, error.message);
+      });
   };
+
 
   return (
     <KeyboardAvoidingView
