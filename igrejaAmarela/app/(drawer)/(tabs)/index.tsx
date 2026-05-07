@@ -30,6 +30,7 @@ export default function HomeScreen() {
       id: 2,
       titulo: 'Psicologo',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../psicologo'),
       imagem: require('../../../assets/images/psicologo.png'),
       cor: '#f7f7fa',
     },
@@ -74,7 +75,7 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContainer}
         >
           {servicos.map((servico) => (
-            <TouchableOpacity key={servico.id} style={styles.servicoCard}   onPress={servico.onclick}  // ADICIONE ESTA LINHA
+            <TouchableOpacity key={servico.id} style={styles.servicoCard}   onPress={servico.onclick}  
 >
               <View style={[styles.imageContainer, { backgroundColor: servico.cor + '20' }]}>
                 <Image
