@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  Image, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
   TouchableOpacity,
-  Dimensions 
+  Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -45,6 +45,7 @@ export default function HomeScreen() {
       id: 4,
       titulo: 'Midias',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../midias'),
       imagem: require('../../../assets/images/midias.png'),
       cor: '#f7f7fa',
     },
@@ -63,20 +64,20 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      
 
-   
+
+
 
       <View style={styles.servicosSection}>
         <Text style={styles.sectionTitle}>Projetos</Text>
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
         >
           {servicos.map((servico) => (
-            <TouchableOpacity key={servico.id} style={styles.servicoCard}   onPress={servico.onclick}  
->
+            <TouchableOpacity key={servico.id} style={styles.servicoCard} onPress={servico.onclick}
+            >
               <View style={[styles.imageContainer, { backgroundColor: servico.cor + '20' }]}>
                 <Image
                   source={servico.imagem}
@@ -123,14 +124,14 @@ export default function HomeScreen() {
       <View style={styles.lastCard}>
         <View style={styles.lastCardLeft}>
           <Text style={styles.lastCardLeftText}>
-            Ajude Nossas 
+            Ajude Nossas
             <Text style={styles.lastCardLeftTextYellow}> AÇÕES</Text>
           </Text>
           <Text style={styles.lastCardDesc}>
             Lorem Ipsum is simply lorem Ipsum is simply
           </Text>
         </View>
-        
+
         <TouchableOpacity style={styles.lastCardRight}>
           <View style={styles.lastCardImageContainer}>
             <Image
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginHorizontal: 15,
     marginVertical: 15,
- 
+
   },
   lastCardLeft: {
     flexDirection: 'column',

@@ -10,7 +10,6 @@ import {
   Dimensions 
 } from 'react-native';
 
-
 export default function AcoesScreen() {
   const servicos = [
     {
@@ -25,7 +24,7 @@ export default function AcoesScreen() {
       id: 2,
       titulo: 'Psicologo',
       descricao: 'Lorem Ipsum is simply',
-      onclick: () => router.push('../../psicologo'),
+      onclick: () => router.push('../../psicologo'), // ✅ ADICIONADO
       imagem: require('../.././assets/images/psicologo.png'),
       cor: '#f7f7fa',
     },
@@ -33,6 +32,7 @@ export default function AcoesScreen() {
       id: 3,
       titulo: 'Grupo Ajuda',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../grupoAjuda'), // ✅ ADICIONADO
       imagem: require('../.././assets/images/grupoAjuda.png'),
       cor: '#f7f7fa',
     },
@@ -40,6 +40,7 @@ export default function AcoesScreen() {
       id: 4,
       titulo: 'Midias',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../midias'), // ✅ JÁ TINHA, MAS VOU DEIXAR
       imagem: require('../.././assets/images/midias.png'),
       cor: '#f7f7fa',
     },
@@ -47,6 +48,7 @@ export default function AcoesScreen() {
       id: 5,
       titulo: 'Ajuda',
       descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../ajuda'), // ✅ ADICIONADO
       imagem: require('../.././assets/images/ajuda.png'),
       cor: '#f7f7fa',
     },
@@ -62,13 +64,16 @@ export default function AcoesScreen() {
         <Text style={styles.title}>
           Projetos em <Text style={styles.titleYellow}>AÇÃO</Text>
         </Text>
-     
       </View>
 
       <View style={styles.servicosGrid}>
         <View style={styles.column}>
           {servicosCol1.map((servico) => (
-            <TouchableOpacity key={servico.id} style={styles.servicoCard} onPress={servico.onclick} >
+            <TouchableOpacity 
+              key={servico.id} 
+              style={styles.servicoCard} 
+              onPress={servico.onclick} // ✅ TODOS AGORA TÊM onPress
+            >
               <View style={[styles.imageContainer, { backgroundColor: servico.cor + '20' }]}>
                 <Image
                   source={servico.imagem}
@@ -83,7 +88,11 @@ export default function AcoesScreen() {
         
         <View style={styles.column}>
           {servicosCol2.map((servico) => (
-            <TouchableOpacity key={servico.id} style={styles.servicoCard}>
+            <TouchableOpacity 
+              key={servico.id} 
+              style={styles.servicoCard}
+              onPress={servico.onclick} // ✅ CORRIGIDO - ANTES ESTAVA FALTANDO
+            >
               <View style={[styles.imageContainer, { backgroundColor: servico.cor + '20' }]}>
                 <Image
                   source={servico.imagem}
@@ -92,7 +101,6 @@ export default function AcoesScreen() {
                 />
               </View>
               <Text style={styles.servicoTitulo}>{servico.titulo}</Text>
-             
             </TouchableOpacity>
           ))}
         </View>
