@@ -21,7 +21,6 @@ export default function HomeScreen() {
     {
       id: 1,
       titulo: 'Alimentação',
-      descricao: 'Lorem Ipsum is simply',
       onclick: () => router.push('../../alimentacao'),
       imagem: require('../../../assets/images/alimentacao.png'),
       cor: '#f7f7fa',
@@ -29,7 +28,6 @@ export default function HomeScreen() {
     {
       id: 2,
       titulo: 'Psicologo',
-      descricao: 'Lorem Ipsum is simply',
       onclick: () => router.push('../../psicologo'),
       imagem: require('../../../assets/images/psicologo.png'),
       cor: '#f7f7fa',
@@ -37,14 +35,13 @@ export default function HomeScreen() {
     {
       id: 3,
       titulo: 'Grupo Ajuda',
-      descricao: 'Lorem Ipsum is simply',
+      onclick: () => router.push('../../grupoAjuda'),
       imagem: require('../../../assets/images/grupoAjuda.png'),
       cor: '#f7f7fa',
     },
     {
       id: 4,
       titulo: 'Midias',
-      descricao: 'Lorem Ipsum is simply',
       onclick: () => router.push('../../midias'),
       imagem: require('../../../assets/images/midias.png'),
       cor: '#f7f7fa',
@@ -86,7 +83,6 @@ export default function HomeScreen() {
                 />
               </View>
               <Text style={styles.servicoTitulo}>{servico.titulo}</Text>
-              <Text style={styles.servicoDescricao}>{servico.descricao}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -115,8 +111,7 @@ export default function HomeScreen() {
         <View style={styles.historiaTextContainer}>
           <Text style={styles.historiaTitle}>Conheça A História</Text>
           <Text style={styles.historiaDesc}>
-            Lorem Ipsum is simply lorem Ipsum is simply
-          </Text>
+            Conheça a história da nossa comunidade         </Text>
         </View>
         <Ionicons name="chevron-forward" size={20} color="#999" />
       </TouchableOpacity>
@@ -128,16 +123,18 @@ export default function HomeScreen() {
             <Text style={styles.lastCardLeftTextYellow}> AÇÕES</Text>
           </Text>
           <Text style={styles.lastCardDesc}>
-            Lorem Ipsum is simply lorem Ipsum is simply
-          </Text>
+            Partilhe sua oferta na com o PIX</Text>
         </View>
 
-        <TouchableOpacity style={styles.lastCardRight}>
+        <TouchableOpacity
+          onPress={() => router.push('../../grupoAjuda')}
+          style={styles.lastCardRight}>
           <View style={styles.lastCardImageContainer}>
             <Image
               source={require('../../../assets/images/suporte.png')}
               style={styles.lastCardImage}
               resizeMode="contain"
+
             />
           </View>
           <Text style={styles.lastCardTitle}>Ajude</Text>

@@ -15,48 +15,56 @@ const { width } = Dimensions.get('window');
 export default function AjudaScreen() {
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+            
             
 
-            <View style={styles.centralizedContainer}>
-                <Text style={styles.boldText}>
-                    Partilhe <Text style={styles.yellowText}>Conosco</Text>
-                </Text>
-
-            </View>
-
-            <View style={styles.largeImageContainer}>
-                <Image
-                    source={require('../../../assets/images/alimentos.png')}
-                    style={styles.largeImage}
-                    resizeMode="cover"
-                />
+             <View style={styles.titleContainer}>
+                            <View style={styles.titleRow}>
+                                <View style={styles.titleTextContainer}>
+                                    <Text style={styles.title}>Ajuda</Text>
+                                </View>
+                                <View style={styles.titleImageContainer}>
+                                    <Image
+                                        source={require('../../../assets/images/ajuda.png')}
+                                        style={styles.titleImage}
+                                        resizeMode="contain"
+                                    />
+                                </View>
+                            </View>
+                        </View>
+            
+            <View style={styles.qrCodeWrapper}>
+                <View style={styles.qrCodeContainer}>
+                    <Image
+                        source={require('../../../assets/images/qrCode.jpeg')}
+                        style={styles.qrCodeImage}
+                        resizeMode="contain"
+                    />
+                </View>
+                <Text style={styles.pixText}>PIX: IGREJAAMARELA@GMAIL.COM</Text>
             </View>
 
             <View style={styles.infoContainer}>
-
                 <Text style={styles.boldText}>
                     Nossos <Text style={styles.yellowText}>objetivos</Text>
                 </Text>
                 <Text style={styles.infoText}>
-                    Melhorias para a igreja!! tanto para a infraestrutra
+                    Melhorias para a igreja!! tanto para a infraestrutura
                     da paroquia. Para a acomodação dos fieis, quanto
                     para a compra de novos equipamentos para todos
                     ministerios ultilizarem
                 </Text>
             </View>
 
-
-
+    
 
             <View style={styles.centralizedContainer}>
-
                 <Text style={styles.regularText}>
                     “Cada um contribua segundo propôs no coração, não com tristeza ou por necessidade;
-                     porque Deus ama a quem dá com alegria.” </Text>
-
-                <Text style={styles.regularText}>                                  (2 Coríntios 9:7)</Text>
-
+                     porque Deus ama a quem dá com alegria.”
+                </Text>
+                <Text style={styles.bibleVerse}>(2 Coríntios 9:7)</Text>
             </View>
         </ScrollView>
     );
@@ -67,6 +75,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    scrollContent: {
+        paddingBottom: 40,
+    },
     titleContainer: {
         paddingHorizontal: 20,
         paddingTop: 20,
@@ -75,13 +86,17 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
     },
-    titleRow: {
+   titleRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
     titleTextContainer: {
         flex: 1,
+    },
+     titleImage: {
+        width: 50,
+        height: 50,
     },
     title: {
         fontSize: 28,
@@ -94,10 +109,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     titleImageContainer: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: '#fff',
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: '#fff8e7',
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#000',
@@ -106,82 +121,103 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
-    titleImage: {
-        width: 50,
-        height: 50,
-    },
-    // Texto centralizado
     centralizedContainer: {
-        display: 'flex',
-
-        alignItems: 'flex-start',
-        paddingVertical: 30,
+        paddingVertical: 20,
         paddingHorizontal: 20,
     },
     boldText: {
-
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#000',
-        marginLeft: 10,
+        
         marginBottom: 10,
     },
     yellowText: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#fec31d',
         textAlign: 'center',
-        marginBottom: 10,
     },
     regularText: {
-        fontSize: 13,
+        fontSize: 14,
         color: '#666',
-        marginTop:2,
+        marginTop: 5,
         textAlign: 'center',
-
+        lineHeight: 22,
     },
-    largeImageContainer: {
-        marginHorizontal: 20,
-        marginVertical: 10,
-        borderRadius: 20,
-        overflow: 'hidden',
-        height: 200,
+    bibleVerse: {
+        fontSize: 14,
+        color: '#666',
+        marginTop: 8,
+        textAlign: 'center',
+        fontStyle: 'italic',
+    },
+    // QR Code estilizado como quadrado
+    qrCodeWrapper: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+    },
+    qrCodeContainer: {
+        width: width - 80,
+        height: width - 80,
+        maxWidth: 280,
+        maxHeight: 280,
+        backgroundColor: '#fff',
+        borderRadius: 24,
+        padding: 16,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 6,
+        borderWidth: 1,
+        borderColor: '#f0f0f0',
     },
-    largeImage: {
+    qrCodeImage: {
         width: '100%',
         height: '100%',
+        borderRadius: 12,
+    },
+    pixText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginTop: 16,
+        textAlign: 'center',
+        backgroundColor: '#f8f8f8',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 30,
+        overflow: 'hidden',
     },
     infoContainer: {
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-    },
-    infoTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 10,
+        paddingHorizontal: 25,
+        paddingVertical: 15,
     },
     infoText: {
-        fontSize: 16,
-        color: '#666',
+        fontSize: 15,
+        color: '#555',
         lineHeight: 24,
         textAlign: 'justify',
+        marginTop: 5,
     },
     actionButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fec31d',
-        marginHorizontal: 20,
+        marginHorizontal: 25,
         marginVertical: 20,
         paddingVertical: 16,
-        borderRadius: 12,
+        borderRadius: 30,
         gap: 10,
+        shadowColor: '#fec31d',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 5,
     },
     actionButtonText: {
         fontSize: 18,

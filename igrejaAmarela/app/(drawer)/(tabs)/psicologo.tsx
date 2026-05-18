@@ -9,6 +9,7 @@ import {
     Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -38,6 +39,14 @@ export default function PsicologoScreen() {
 
             </View>
 
+            <View style={styles.largeImageContainer}>
+                <Image
+                    source={require('../../../assets/images/ajudaPsicologica.jpg')}
+                    style={styles.largeImage}
+                    resizeMode="cover"
+                />
+            </View>
+
 
 
             <View style={styles.infoContainer}>
@@ -49,20 +58,13 @@ export default function PsicologoScreen() {
             </View>
 
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+                onPress={() => router.push('https://api.whatsapp.com/send?phone=5511934112405&text=Ola%2C+gostaria+de+falar+sobre+psicologo+com+a+Igreja%F0%9F%99%8F')}
+                style={styles.actionButton}>
                 <Text style={styles.actionButtonText}>Saiba Mais</Text>
                 <Ionicons name="arrow-forward-outline" size={20} color="#fff" />
             </TouchableOpacity>
 
-            <View style={styles.centralizedContainer}>
-                <Text style={styles.boldText}>
-                    Entre em <Text style={styles.yellowText}>contato!</Text>
-                </Text>
-
-                <Text style={styles.regularText}>
-                    11 9 2544-4562                </Text>
-
-            </View>
         </ScrollView>
     );
 }
