@@ -1,11 +1,15 @@
 // app/components/CustomHeader.tsx
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { DrawerActions } from '@react-navigation/native';
 
-export default function CustomHeader() {
-  const navigation = useNavigation();
+type CustomHeaderProps = {
+  navigation: {
+    dispatch: (action: ReturnType<typeof DrawerActions.openDrawer>) => void;
+  };
+};
 
+export default function CustomHeader({ navigation }: CustomHeaderProps) {
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };

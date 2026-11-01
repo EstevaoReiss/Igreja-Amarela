@@ -1,6 +1,5 @@
-import { Drawer } from 'expo-router/drawer';
+import { Drawer, DrawerContentScrollView, DrawerItemList } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CommonActions, DrawerActions } from '@react-navigation/native';
@@ -80,7 +79,7 @@ export default function DrawerLayout() {
     <Drawer
       drawerContent={CustomDrawerContent}
       screenOptions={{
-        header: () => <CustomHeader />,
+        header: ({ navigation }) => <CustomHeader navigation={navigation} />,
         drawerStyle: {
           width: 280,
         },
