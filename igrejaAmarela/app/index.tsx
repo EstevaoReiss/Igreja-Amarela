@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,62 +9,63 @@ import {
   Platform,
   Image,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { auth } from '../src/firebase.config';
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const [carregando, setCarregando] = useState(false);
 
-  // Observer de autenticação - se já estiver logado, vai direto para o drawer
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.replace('/(drawer)/(tabs)');
-      }
-    });
-    return unsubscribe;
-  }, []);
-
-  const handleLogin = () => {
-    if (!email || !senha) {
+  const handleLogin = async () => {
+    if (!email.trim() || !senha) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
       return;
     }
 
-    signInWithEmailAndPassword(auth, email, senha)
-      .then((userCredential) => {
-        Alert.alert('Sucesso', 'Login realizado com sucesso!');
-        router.replace('/(drawer)/(tabs)');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        let mensagem = 'Erro ao fazer login. Tente novamente.';
-        
-        if (errorCode === 'auth/user-not-found') {
-          mensagem = 'Usuário não cadastrado. Por favor, verifique seu e-mail ou cadastre-se.';
-        } else if (errorCode === 'auth/wrong-password') {
-          mensagem = 'Senha incorreta. Tente novamente.';
-        } else if (errorCode === 'auth/invalid-email') {
-          mensagem = 'E-mail inválido. Por favor, verifique.';
-        } else if (errorCode === 'auth/too-many-requests') {
-          mensagem = 'Muitas tentativas de login. Tente novamente mais tarde.';
-        } else if (errorCode === 'auth/invalid-credential') {
-          mensagem = 'E-mail ou senha incorretos. Tente novamente.';
-        }
-        
-        Alert.alert('Erro ao fazer login', mensagem);
-        setSenha('');
-        setMostrarSenha(false);
-        console.error('Erro de login:', errorCode, error.message);
-      });
+    setCarregando(true);
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email.trim(), senha);
+
+      if (!credential.user.emailVerified) {
+        router.replace('/verificar-email');
+        return;
+      }
+
+      router.replace('/(drawer)/(tabs)');
+    } catch (error) {
+      const errorCode =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? error.code
+          : undefined;
+      let mensagem = 'Erro ao fazer login. Tente novamente.';
+
+      if (errorCode === 'auth/user-not-found') {
+        mensagem = 'Usuário não cadastrado. Por favor, verifique seu e-mail ou cadastre-se.';
+      } else if (errorCode === 'auth/wrong-password') {
+        mensagem = 'Senha incorreta. Tente novamente.';
+      } else if (errorCode === 'auth/invalid-email') {
+        mensagem = 'E-mail inválido. Por favor, verifique.';
+      } else if (errorCode === 'auth/too-many-requests') {
+        mensagem = 'Muitas tentativas de login. Tente novamente mais tarde.';
+      } else if (errorCode === 'auth/invalid-credential') {
+        mensagem = 'E-mail ou senha incorretos. Tente novamente.';
+      }
+
+      Alert.alert('Erro ao fazer login', mensagem);
+      setSenha('');
+      setMostrarSenha(false);
+      console.error('Erro de login:', errorCode, error);
+    } finally {
+      setCarregando(false);
+    }
   };
 
   return (
@@ -74,7 +75,6 @@ export default function LoginScreen() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
       <ScrollView
-        ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
@@ -136,13 +136,29 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>Entrar</Text>
-              <Ionicons name="arrow-forward-outline" size={20} color="#0f0a0a" />
+            <TouchableOpacity
+              style={[styles.loginButton, carregando && styles.disabledButton]}
+              onPress={handleLogin}
+              disabled={carregando}
+            >
+              {carregando ? (
+                <ActivityIndicator color="#0f0a0a" />
+              ) : (
+                <>
+                  <Text style={styles.loginButtonText}>Entrar</Text>
+                  <Ionicons name="arrow-forward-outline" size={20} color="#0f0a0a" />
+                </>
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.forgotButton}>
               <Text style={styles.forgotText}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.forgotButton}
+              onPress={() => router.push('/cadastro')}
+            >
+              <Text style={styles.forgotText}>Não tem conta? Cadastre-se</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -244,6 +260,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 20,
     gap: 10,
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   loginButtonText: {
     color: '#1b1a1a',

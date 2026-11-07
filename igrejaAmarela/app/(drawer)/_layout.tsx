@@ -1,30 +1,20 @@
 import { Drawer, DrawerContentScrollView, DrawerItemList } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Alert, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CommonActions, DrawerActions } from '@react-navigation/native';
+import { signOut } from 'firebase/auth';
 import CustomHeader from '../components/customHeader';
 import { auth } from '../../src/firebase.config';
 
 function CustomDrawerContent(props: any) {
-  const router = useRouter();
+  'use no memo';
 
   const handleLogout = async () => {
     try {
-      await auth.signOut();
-      
-      props.navigation.closeDrawer();
-      
-      setTimeout(() => {
-        props.navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'index' }],
-          })
-        );
-      }, 100);
+      await signOut(auth);
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
+      Alert.alert('Erro', 'Não foi possível sair da conta. Tente novamente.');
     }
   };
 
@@ -77,7 +67,7 @@ export default function DrawerLayout() {
 
   return (
     <Drawer
-      drawerContent={CustomDrawerContent}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         header: ({ navigation }) => <CustomHeader navigation={navigation} />,
         drawerStyle: {

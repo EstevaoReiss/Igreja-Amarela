@@ -1,22 +1,46 @@
-import { Stack, router } from 'expo-router';
+import { Stack, router, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { User } from 'firebase/auth';
 import { auth } from '../src/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export default function RootLayout() {
+  const segments: string[] = useSegments();
+  const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      // Se NÃO estiver logado e tentar acessar o drawer, redireciona para login
-      if (!user) {
-        // Verifica se a rota atual não é a de login
-        // Isso evita redirecionamento infinito
-        router.replace('/');
-      }
+      setUser(user);
+      setAuthReady(true);
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (!authReady) return;
+
+    const currentRoute = segments[0];
+    const isDrawerRoute = currentRoute === '(drawer)';
+    const isLoginRoute = segments.length === 0;
+    const isVerificationRoute = currentRoute === 'verificar-email';
+
+    if (!user) {
+      if (isDrawerRoute || isVerificationRoute) router.replace('/');
+      return;
+    }
+
+    if (!user.emailVerified) {
+      if (isDrawerRoute || isLoginRoute) router.replace('/verificar-email');
+      return;
+    }
+
+    if (isLoginRoute || isVerificationRoute) {
+      router.replace('/(drawer)/(tabs)');
+    }
+  }, [authReady, segments, user]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
