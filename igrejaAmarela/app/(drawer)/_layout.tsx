@@ -1,20 +1,27 @@
 import { Drawer, DrawerContentScrollView, DrawerItemList } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CommonActions, DrawerActions } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import CustomHeader from '../components/customHeader';
 import { auth } from '../../src/firebase.config';
+import { traduzirTipoUsuario, useUsuario } from '../../hooks/useUsuario';
 
 function CustomDrawerContent(props: any) {
   'use no memo';
+  const { usuario, carregando } = useUsuario();
+  const nomeUsuario = carregando
+    ? 'Carregando...'
+    : usuario?.nome || auth.currentUser?.displayName || 'Usuário';
+  const tipoUsuario = carregando
+    ? 'Carregando...'
+    : traduzirTipoUsuario(usuario?.tipoUsuario);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-      Alert.alert('Erro', 'Não foi possível sair da conta. Tente novamente.');
     }
   };
 
@@ -34,8 +41,8 @@ function CustomDrawerContent(props: any) {
             </View>
             
             <View style={drawerStyles.userTextContainer}>
-              <Text style={drawerStyles.userName}>Fernanda Souza</Text>
-              <Text style={drawerStyles.userEmail}>Admin</Text>
+              <Text style={drawerStyles.userName}>{nomeUsuario}</Text>
+              <Text style={drawerStyles.userEmail}>{tipoUsuario}</Text>
             </View>
           </View>
         </View>
