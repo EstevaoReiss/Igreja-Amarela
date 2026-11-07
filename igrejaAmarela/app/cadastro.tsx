@@ -203,7 +203,7 @@ export default function CadastroScreen() {
 
           <TouchableOpacity
             style={styles.linkButton}
-            onPress={() => router.replace('/')}
+            onPress={() => router.replace('/login')}
             disabled={carregando}
           >
             <Text style={styles.linkText}>Já tenho conta</Text>

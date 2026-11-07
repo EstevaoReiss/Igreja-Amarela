@@ -24,11 +24,11 @@ export default function RootLayout() {
 
     const currentRoute = segments[0];
     const isDrawerRoute = currentRoute === '(drawer)';
-    const isLoginRoute = segments.length === 0;
+    const isLoginRoute = currentRoute === 'login' || segments.length === 0;
     const isVerificationRoute = currentRoute === 'verificar-email';
 
     if (!user) {
-      if (isDrawerRoute || isVerificationRoute) router.replace('/');
+      if (isDrawerRoute || isVerificationRoute) router.replace('/login');
       return;
     }
 
@@ -51,6 +51,13 @@ export default function RootLayout() {
           options={{ 
             headerShown: false 
           }} 
+        />
+
+        <Stack.Screen
+          name="login"
+          options={{
+            headerShown: false
+          }}
         />
         
         {/* Drawer - COM todas as telas principais */}

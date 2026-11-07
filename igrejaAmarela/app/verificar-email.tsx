@@ -13,7 +13,7 @@ export default function VerificarEmailScreen() {
   const handleVerificar = async () => {
     const user = auth.currentUser;
     if (!user) {
-      router.replace('/');
+      router.replace('/login');
       return;
     }
 
@@ -39,7 +39,7 @@ export default function VerificarEmailScreen() {
   const handleReenviar = async () => {
     const user = auth.currentUser;
     if (!user) {
-      router.replace('/');
+      router.replace('/login');
       return;
     }
 
@@ -68,7 +68,7 @@ export default function VerificarEmailScreen() {
     setAcaoEmAndamento('sair');
     try {
       await signOut(auth);
-      router.replace('/');
+      router.replace('/login');
     } catch (error) {
       console.error('Erro ao sair da conta:', error);
       Alert.alert('Erro', 'Não foi possível sair da conta. Tente novamente.');
