@@ -15,13 +15,26 @@ import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../src/firebase.config';
+import { mascaraTelefone } from '../utils/mascaras';
+import { validarCidade, validarTelefone } from '../utils/validacoes';
 
-type CamposCadastro = 'nome' | 'email' | 'senha' | 'confirmarSenha';
+type TipoUsuario = 'fiel' | 'colaborador';
+type CamposCadastro =
+  | 'nome'
+  | 'email'
+  | 'telefone'
+  | 'cidade'
+  | 'tipoUsuario'
+  | 'senha'
+  | 'confirmarSenha';
 type ErrosCadastro = Partial<Record<CamposCadastro, string>>;
 
 function validarCadastro(
   nome: string,
   email: string,
+  telefone: string,
+  cidade: string,
+  tipoUsuario: TipoUsuario | null,
   senha: string,
   confirmarSenha: string
 ): ErrosCadastro {
@@ -39,6 +52,20 @@ function validarCadastro(
     erros.email = 'Informe seu e-mail.';
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado)) {
     erros.email = 'Informe um e-mail válido.';
+  }
+
+  const erroTelefone = validarTelefone(telefone);
+  if (erroTelefone) {
+    erros.telefone = erroTelefone;
+  }
+
+  const erroCidade = validarCidade(cidade);
+  if (erroCidade) {
+    erros.cidade = erroCidade;
+  }
+
+  if (!tipoUsuario) {
+    erros.tipoUsuario = 'Selecione Fiel ou Colaborador.';
   }
 
   if (!senha) {
@@ -71,6 +98,9 @@ export default function CadastroScreen() {
   const router = useRouter();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [tipoUsuario, setTipoUsuario] = useState<TipoUsuario | null>(null);
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -81,11 +111,21 @@ export default function CadastroScreen() {
   const handleCadastro = async () => {
     const nomeCompleto = nome.trim();
     const emailNormalizado = email.trim().toLowerCase();
-    const errosValidacao = validarCadastro(nomeCompleto, emailNormalizado, senha, confirmarSenha);
+    const cidadeNormalizada = cidade.trim();
+    const telefoneNumerico = telefone.replace(/\D/g, '');
+    const errosValidacao = validarCadastro(
+      nomeCompleto,
+      emailNormalizado,
+      telefone,
+      cidadeNormalizada,
+      tipoUsuario,
+      senha,
+      confirmarSenha
+    );
 
     setErros(errosValidacao);
     setErroCadastro('');
-    if (Object.keys(errosValidacao).length > 0) {
+    if (Object.keys(errosValidacao).length > 0 || !tipoUsuario) {
       return;
     }
 
@@ -101,12 +141,14 @@ export default function CadastroScreen() {
       await setDoc(doc(db, 'usuarios', credential.user.uid), {
         nome: nomeCompleto,
         email: emailNormalizado,
-        role: 'fiel',
+        telefone: telefoneNumerico,
+        cidade: cidadeNormalizada,
+        tipoUsuario,
         criadoEm: serverTimestamp(),
       });
       await sendEmailVerification(credential.user);
 
-      router.replace('/verificar-email');
+      router.replace('/(drawer)/(tabs)');
     } catch (error) {
       const errorCode = getErrorCode(error);
       if (errorCode === 'auth/email-already-in-use') {
@@ -188,6 +230,78 @@ export default function CadastroScreen() {
             />
           </View>
           {erros.email ? <Text style={styles.errorText}>{erros.email}</Text> : null}
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="call-outline" size={20} color="#999" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Telefone (11) 91234-5678"
+              placeholderTextColor="#999"
+              value={telefone}
+              onChangeText={(valor) => {
+                setTelefone(mascaraTelefone(valor));
+                setErros((atuais) => ({ ...atuais, telefone: undefined }));
+                setErroCadastro('');
+              }}
+              keyboardType="phone-pad"
+              autoComplete="tel"
+              returnKeyType="next"
+            />
+          </View>
+          {erros.telefone ? <Text style={styles.errorText}>{erros.telefone}</Text> : null}
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="location-outline" size={20} color="#999" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Cidade"
+              placeholderTextColor="#999"
+              value={cidade}
+              onChangeText={(valor) => {
+                setCidade(valor);
+                setErros((atuais) => ({ ...atuais, cidade: undefined }));
+                setErroCadastro('');
+              }}
+              autoCapitalize="words"
+              returnKeyType="next"
+            />
+          </View>
+          {erros.cidade ? <Text style={styles.errorText}>{erros.cidade}</Text> : null}
+
+          <Text style={styles.selectorLabel}>Tipo de usuário</Text>
+          <View style={styles.userTypeSelector}>
+            {([
+              ['fiel', 'Fiel'],
+              ['colaborador', 'Colaborador'],
+            ] as const).map(([tipo, rotulo]) => {
+              const selecionado = tipoUsuario === tipo;
+              return (
+                <TouchableOpacity
+                  key={tipo}
+                  style={[styles.userTypeButton, selecionado && styles.userTypeButtonSelected]}
+                  onPress={() => {
+                    setTipoUsuario(tipo);
+                    setErros((atuais) => ({ ...atuais, tipoUsuario: undefined }));
+                    setErroCadastro('');
+                  }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: selecionado }}
+                >
+                  <Text
+                    style={[
+                      styles.userTypeButtonText,
+                      selecionado && styles.userTypeButtonTextSelected,
+                    ]}
+                  >
+                    {rotulo}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          {erros.tipoUsuario ? (
+            <Text style={styles.errorText}>{erros.tipoUsuario}</Text>
+          ) : null}
 
           <View style={styles.inputContainer}>
             <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
@@ -345,6 +459,38 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
     color: '#333',
+  },
+  selectorLabel: {
+    color: '#555',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  userTypeSelector: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  userTypeButton: {
+    flex: 1,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    paddingVertical: 13,
+    backgroundColor: '#f8f8f8',
+  },
+  userTypeButtonSelected: {
+    borderColor: '#fec31d',
+    backgroundColor: '#fff8df',
+  },
+  userTypeButtonText: {
+    color: '#666',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  userTypeButtonTextSelected: {
+    color: '#1b1a1a',
+    fontWeight: 'bold',
   },
   errorText: {
     color: '#d32f2f',
