@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -16,6 +15,46 @@ import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../src/firebase.config';
+
+type CamposCadastro = 'nome' | 'email' | 'senha' | 'confirmarSenha';
+type ErrosCadastro = Partial<Record<CamposCadastro, string>>;
+
+function validarCadastro(
+  nome: string,
+  email: string,
+  senha: string,
+  confirmarSenha: string
+): ErrosCadastro {
+  const erros: ErrosCadastro = {};
+  const nomeCompleto = nome.trim();
+  const emailNormalizado = email.trim().toLowerCase();
+
+  if (!nomeCompleto) {
+    erros.nome = 'Informe seu nome.';
+  } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(nomeCompleto)) {
+    erros.nome = 'Use apenas letras e espaços no nome.';
+  }
+
+  if (!emailNormalizado) {
+    erros.email = 'Informe seu e-mail.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado)) {
+    erros.email = 'Informe um e-mail válido.';
+  }
+
+  if (!senha) {
+    erros.senha = 'Informe sua senha.';
+  } else if (senha.length < 6) {
+    erros.senha = 'A senha deve ter pelo menos 6 caracteres.';
+  }
+
+  if (!confirmarSenha) {
+    erros.confirmarSenha = 'Confirme sua senha.';
+  } else if (senha !== confirmarSenha) {
+    erros.confirmarSenha = 'As senhas não conferem.';
+  }
+
+  return erros;
+}
 
 function getErrorCode(error: unknown): string | undefined {
   if (
@@ -36,23 +75,17 @@ export default function CadastroScreen() {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const [erros, setErros] = useState<ErrosCadastro>({});
+  const [erroCadastro, setErroCadastro] = useState('');
 
   const handleCadastro = async () => {
     const nomeCompleto = nome.trim();
-    const emailNormalizado = email.trim();
+    const emailNormalizado = email.trim().toLowerCase();
+    const errosValidacao = validarCadastro(nomeCompleto, emailNormalizado, senha, confirmarSenha);
 
-    if (!nomeCompleto || !emailNormalizado || !senha || !confirmarSenha) {
-      Alert.alert('Atenção', 'Preencha todos os campos.');
-      return;
-    }
-
-    if (senha.length < 6) {
-      Alert.alert('Atenção', 'A senha precisa ter pelo menos 6 caracteres.');
-      return;
-    }
-
-    if (senha !== confirmarSenha) {
-      Alert.alert('Atenção', 'As senhas não conferem.');
+    setErros(errosValidacao);
+    setErroCadastro('');
+    if (Object.keys(errosValidacao).length > 0) {
       return;
     }
 
@@ -76,22 +109,24 @@ export default function CadastroScreen() {
       router.replace('/verificar-email');
     } catch (error) {
       const errorCode = getErrorCode(error);
-      let mensagem = 'Não foi possível criar a conta. Tente novamente.';
-
       if (errorCode === 'auth/email-already-in-use') {
-        mensagem = 'Esse e-mail já está cadastrado.';
+        setErros((atuais) => ({ ...atuais, email: 'Este e-mail já está cadastrado' }));
       } else if (errorCode === 'auth/invalid-email') {
-        mensagem = 'E-mail inválido.';
+        setErros((atuais) => ({ ...atuais, email: 'E-mail inválido' }));
       } else if (errorCode === 'auth/weak-password') {
-        mensagem = 'Senha muito fraca. Use pelo menos 6 caracteres.';
+        setErros((atuais) => ({
+          ...atuais,
+          senha: 'A senha deve ter pelo menos 6 caracteres',
+        }));
       } else if (errorCode === 'permission-denied') {
-        mensagem = 'Sem permissão para salvar os dados. Confira as regras do Firestore.';
+        setErroCadastro('Sem permissão para salvar os dados. Confira as regras do Firestore.');
       } else if (errorCode === 'auth/network-request-failed') {
-        mensagem = 'Não foi possível conectar. Verifique sua internet e tente novamente.';
+        setErroCadastro('Não foi possível conectar. Verifique sua internet e tente novamente.');
+      } else {
+        setErroCadastro('Não foi possível criar a conta. Tente novamente.');
       }
 
       console.error('Erro no cadastro:', errorCode, error);
-      Alert.alert('Erro', mensagem);
     } finally {
       setCarregando(false);
     }
@@ -122,12 +157,17 @@ export default function CadastroScreen() {
               placeholder="Nome completo"
               placeholderTextColor="#999"
               value={nome}
-              onChangeText={setNome}
+              onChangeText={(valor) => {
+                setNome(valor);
+                setErros((atuais) => ({ ...atuais, nome: undefined }));
+                setErroCadastro('');
+              }}
               autoCapitalize="words"
               autoComplete="name"
               returnKeyType="next"
             />
           </View>
+          {erros.nome ? <Text style={styles.errorText}>{erros.nome}</Text> : null}
 
           <View style={styles.inputContainer}>
             <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
@@ -136,13 +176,18 @@ export default function CadastroScreen() {
               placeholder="E-mail"
               placeholderTextColor="#999"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(valor) => {
+                setEmail(valor);
+                setErros((atuais) => ({ ...atuais, email: undefined }));
+                setErroCadastro('');
+              }}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
               returnKeyType="next"
             />
           </View>
+          {erros.email ? <Text style={styles.errorText}>{erros.email}</Text> : null}
 
           <View style={styles.inputContainer}>
             <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
@@ -151,7 +196,19 @@ export default function CadastroScreen() {
               placeholder="Senha"
               placeholderTextColor="#999"
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={(valor) => {
+                setSenha(valor);
+                setErros((atuais) => ({
+                  ...atuais,
+                  senha: undefined,
+                  confirmarSenha: confirmarSenha
+                    ? confirmarSenha === valor
+                      ? undefined
+                      : 'As senhas não conferem.'
+                    : atuais.confirmarSenha,
+                }));
+                setErroCadastro('');
+              }}
               secureTextEntry={!mostrarSenha}
               autoCapitalize="none"
               autoComplete="new-password"
@@ -169,6 +226,7 @@ export default function CadastroScreen() {
               />
             </TouchableOpacity>
           </View>
+          {erros.senha ? <Text style={styles.errorText}>{erros.senha}</Text> : null}
 
           <View style={styles.inputContainer}>
             <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
@@ -177,7 +235,11 @@ export default function CadastroScreen() {
               placeholder="Confirmar senha"
               placeholderTextColor="#999"
               value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
+              onChangeText={(valor) => {
+                setConfirmarSenha(valor);
+                setErros((atuais) => ({ ...atuais, confirmarSenha: undefined }));
+                setErroCadastro('');
+              }}
               secureTextEntry={!mostrarSenha}
               autoCapitalize="none"
               autoComplete="new-password"
@@ -185,7 +247,11 @@ export default function CadastroScreen() {
               onSubmitEditing={handleCadastro}
             />
           </View>
+          {erros.confirmarSenha ? (
+            <Text style={styles.errorText}>{erros.confirmarSenha}</Text>
+          ) : null}
 
+          {erroCadastro ? <Text style={styles.errorText}>{erroCadastro}</Text> : null}
           <TouchableOpacity
             style={[styles.button, carregando && styles.disabledButton]}
             onPress={handleCadastro}
@@ -279,6 +345,13 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
     color: '#333',
+  },
+  errorText: {
+    color: '#d32f2f',
+    fontSize: 13,
+    marginTop: -10,
+    marginBottom: 12,
+    marginLeft: 4,
   },
   eyeIcon: {
     padding: 5,
