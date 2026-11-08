@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -185,10 +186,15 @@ export default function CadastroScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Criar conta</Text>
-          <View style={styles.emojiContainer}>
-            <Text style={styles.emoji}>🙏</Text>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../assets/images/logo-bolinha.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
+          <Text style={styles.title}>Crie sua conta</Text>
+          <Text style={styles.subtitle}>Preencha seus dados para continuar</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -405,8 +411,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fec31d',
-    padding: 30,
-    paddingTop: 60,
+    paddingHorizontal: 24,
+    paddingTop: 36,
+    paddingBottom: 28,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     alignItems: 'center',
@@ -415,22 +422,29 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#1b1a1a',
-    marginBottom: 20,
+    marginBottom: 8,
   },
-  emojiContainer: {
-    width: 80,
-    height: 80,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 40,
+  imageContainer: {
+    width: 130,
+    height: 130,
+    marginBottom: 16,
+    borderRadius: 45,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
-  emoji: {
-    fontSize: 40,
+  logoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  subtitle: {
+    color: '#4d3c00',
+    fontSize: 15,
+    textAlign: 'center',
   },
   formContainer: {
     marginHorizontal: 20,
-    marginTop: -40,
+    marginTop: 20,
     padding: 25,
     backgroundColor: '#fff',
     borderRadius: 16,

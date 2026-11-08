@@ -1,7 +1,6 @@
 import { Drawer, DrawerContentScrollView, DrawerItemList } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { CommonActions, DrawerActions } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import CustomHeader from '../components/customHeader';
 import { auth } from '../../src/firebase.config';
@@ -62,16 +61,6 @@ function CustomDrawerContent(props: any) {
 }
 
 export default function DrawerLayout() {
-  const navigateToHome = (navigation: any) => {
-    navigation.dispatch(DrawerActions.closeDrawer());
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: '(tabs)' }],
-      })
-    );
-  };
-
   return (
     <Drawer
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -97,12 +86,6 @@ export default function DrawerLayout() {
             <Ionicons name="home-outline" size={size} color={color} />
           ),
         }}
-        listeners={({ navigation }) => ({
-          drawerItemPress: (e) => {
-            e.preventDefault();
-            navigateToHome(navigation);
-          },
-        })}
       />
       <Drawer.Screen
         name="acoes"
